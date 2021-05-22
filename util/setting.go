@@ -55,7 +55,7 @@ var Config = struct {
 
 func Setup() {
 	var err error
-	err = gcfg.ReadFileInto(&Config, "config.ini")
+	err = gcfg.ReadFileInto(&Config, "config/config.ini")
 	if err != nil {
 		log.Fatalf("Failed to parse config file: %v", err)
 	}
