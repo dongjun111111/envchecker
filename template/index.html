@@ -1,0 +1,93 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>配置检测服务</title>
+	 <style>     
+    #action_windows {      
+      text-align: left;
+      font-size:18px;
+      background: #f1f1f1;
+      max-width:95%;
+      width: auto;      
+      height: auto;
+      padding: 20px;
+    }
+    #btn,#btn2,#btn3 {
+      width: auto;
+      height: 30px;
+      font-size: 20px;
+      background-color:green;
+      color:white;
+    }
+    #btn3 {
+      background-color:gray;
+    }
+    #head1 {
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>	
+    <center>
+      <h3 id="head1">配置检测服务</h3>      
+      <button id="btn">启动</button> <button id="btn2">自动刷新</button><button id="btn3">暂停刷新</button>  
+      <pre id="action_windows">
+        等待启动...
+      </pre>          
+    </center>    
+
+    <script>
+      var url = "ws://" + window.location.host + "/ws";
+      var ws = new WebSocket(url);
+      
+      var action_windows = document.getElementById("action_windows");
+      var btn = document.getElementById("btn");
+      var btn2 = document.getElementById("btn2");
+      var btn3 = document.getElementById("btn3");
+
+      ws.onmessage = function (msg) {
+        if (msg.data == "auto-refresh" || msg.data == "start") {
+          action_windows.innerText = "";
+        }
+        // var para = document.createElement("p");
+        // var node = document.createTextNode("这是新文本");
+        // para.appendChild(node);
+        // action_windows.appendChild(para);
+        var line =  msg.data + "\n";
+        action_windows.innerText +=line;
+      };
+      
+      btn.onclick = function (e) {
+       action_windows.innerText ="";    //   放开这个，每次点击都会覆盖老的，不会追加写       
+       ws.send("start");          
+      };
+
+      btn2.onclick = function (e) {
+       this.disabled=true;  
+       this.innerText="已自动刷新";  
+       this.style.background = "gray"; 
+
+       document.getElementById("btn").disabled=true;
+       document.getElementById("btn").style.background = "gray"; 
+
+       document.getElementById("btn3").style.background = "green"; 
+       document.getElementById("btn3").disabled = false; 
+       action_windows.innerText ="";             
+       ws.send("auto-refresh");          
+      };
+
+      btn3.onclick = function (e) {  
+       this.disabled=true;  
+       document.getElementById("btn").disabled=false;
+       document.getElementById("btn").style.background = "green";  
+
+       document.getElementById("btn2").disabled=false;
+       document.getElementById("btn2").style.background = "green"; 
+       document.getElementById("btn2").innerText="自动刷新";
+
+       document.getElementById("btn3").style.background = "gray";  
+       ws.send("suspend");          
+      };
+    </script>
+</body>
+</html>
