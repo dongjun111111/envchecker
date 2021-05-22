@@ -24,14 +24,14 @@ func (s *Obj_Apollo) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		url = "http://" + url
 	}
 	c := &http.Client{
-		Timeout: util.ApolloTouchWaitDuration,
+		Timeout: util.DialTimeOutDuration,
 	}
 	resp, err := c.Get(url)
 	if err != nil || resp == nil || (resp != nil && resp.StatusCode != 200) {
 		if err != nil {
-			return s.OutPut([]byte(url), errors.New(" apollo failed."+err.Error()))
+			return s.OutPut([]byte(url), err)
 		}
-		return s.OutPut([]byte(url), errors.New("  apollo failed."+resp.Status))
+		return s.OutPut([]byte(url), errors.New("connect apollo failed."+resp.Status))
 	}
 	return s.OutPut([]byte(url), nil)
 }

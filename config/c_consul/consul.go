@@ -24,6 +24,7 @@ func (s *Obj_Consul) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	}
 	config := api.DefaultConfig()
 	config.Address = objcfg.Link
+	config.HttpClient.Timeout = util.DialTimeOutDuration
 	client, err := api.NewClient(config)
 	if err != nil {
 		log.Println("checkconsul  initclient failed, err:", err)

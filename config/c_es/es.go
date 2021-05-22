@@ -32,7 +32,7 @@ func (s *Obj_ES) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	defer objcfg.Wg.Done()
 	db, err := NewEsDB(&Config{EsAddrs: []string{objcfg.Link}})
 	if err != nil {
-		return s.OutPut(nil, errors.New("empty es link"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("empty es link"))
 	}
 	body := map[string]interface{}{
 		"test_idx": "test_idx",
@@ -41,7 +41,7 @@ func (s *Obj_ES) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	jsonBody, _ := json.Marshal(body)
 	if err := db.EsDbIndexWrite("test_idx", indexid, bytes.NewReader(jsonBody)); err != nil {
 		log.Println("err:", err)
-		return s.OutPut([]byte(objcfg.Link), errors.New(" EsDbIndexWrite err :"+err.Error()))
+		return s.OutPut([]byte(objcfg.Link), errors.New("EsDbIndexWrite err :"+err.Error()))
 	}
 	return s.OutPut([]byte(objcfg.Link), nil)
 }
@@ -59,7 +59,7 @@ func NewEsDB(c *Config) (db *ElDb, err error) {
 		Addresses: c.EsAddrs,
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost:   10,
-			ResponseHeaderTimeout: 3 * time.Second,
+			ResponseHeaderTimeout: util.DialTimeOutDuration,
 			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
 			TLSClientConfig: &tls.Config{
 				MaxVersion:         tls.VersionTLS11,
@@ -85,10 +85,11 @@ func (eldb *ElDb) EsDbIndexWrite(index, documentid string, msg io.Reader) (err e
 		DocumentID: documentid,
 		Body:       msg,
 		Refresh:    "true",
+		Timeout:    util.DialTimeOutDuration,
 	}
-
-	// Perform the request with the client.
-	res, err := req.Do(context.Background(), eldb.client)
+	ctx, cancel := context.WithTimeout(context.Background(), util.DialTimeOutDuration)
+	defer cancel()
+	res, err := req.Do(ctx, eldb.client)
 	if err != nil {
 		log.Println("Error getting response: %s", err)
 		return err

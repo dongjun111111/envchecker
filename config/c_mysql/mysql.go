@@ -22,7 +22,7 @@ func (s *Obj_Mysql) OutPut(v []byte, arg ...error) (res []byte) {
 func (s *Obj_Mysql) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut(nil, errors.New("empty mysql dsn"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("empty mysql dsn"))
 	}
 	if !strings.Contains(objcfg.Link, "timeout") {
 		objcfg.Link += "&timeout=3s"
@@ -36,7 +36,7 @@ func (s *Obj_Mysql) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		SkipInitializeWithVersion: false,
 	}), &gorm.Config{})
 	if err != nil {
-		return s.OutPut(nil, errors.New("mysql connet failed."+err.Error()))
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
 	var b []byte
 	b = append(b, []byte(objcfg.Link)...)

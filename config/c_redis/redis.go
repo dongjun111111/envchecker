@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -25,18 +24,19 @@ func (s *Obj_Redis) OutPut(v []byte, arg ...error) (res []byte) {
 func (s *Obj_Redis) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut(nil, errors.New("empty redis dsn"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("empty redis dsn"))
 	}
 
 	u, err := url.Parse(objcfg.Link)
 	if err != nil {
-		return s.OutPut(nil, errors.New(objcfg.Link+" redis link parse failed."))
+		return s.OutPut([]byte(objcfg.Link), errors.New(" redis link parse failed."))
 	}
 
 	if u.Scheme == "redis" {
 		opts := &redis.Options{
-			Addr: u.Host,
-			DB:   0,
+			Addr:        u.Host,
+			DialTimeout: util.DialTimeOutDuration,
+			MaxRetries:  0,
 		}
 		if u.User != nil {
 			opts.Password = u.User.Username()
@@ -45,42 +45,50 @@ func (s *Obj_Redis) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		if dbstr != "" {
 			db, err := strconv.Atoi(dbstr)
 			if err != nil {
-				return s.OutPut(nil, errors.New(objcfg.Link+" redis db parse error."+err.Error()))
+				return s.OutPut([]byte(objcfg.Link), err)
 			}
 			opts.DB = db
 		}
 		rClient := redis.NewClient(opts)
 		if rClient != nil {
 			defer rClient.Close()
-			ctx := context.Background()
+			ctx, cancel := context.WithTimeout(context.Background(), util.DialTimeOutDuration)
+			defer cancel()
 			res := rClient.Ping(ctx)
 			if res == nil || res.Err() != nil {
-				return s.OutPut(nil, errors.New(objcfg.Link+" redis init client failed."))
+				if res.Err() != nil {
+					return s.OutPut([]byte(objcfg.Link), res.Err())
+				}
+				return s.OutPut([]byte(objcfg.Link), errors.New(" redis init client failed."))
 			}
 		} else {
-			return s.OutPut(nil, errors.New(objcfg.Link+" redis-opts link error."))
+			return s.OutPut([]byte(objcfg.Link), errors.New(" redis-opts link error."))
 		}
 	} else if u.Scheme == "redis-cluster" {
 		addrs := strings.Split(u.Host, ",")
 		opts := &redis.ClusterOptions{
 			Addrs:       addrs,
 			Password:    u.User.Username(),
-			PoolSize:    50,
-			IdleTimeout: time.Minute * 30,
+			DialTimeout: util.DialTimeOutDuration,
+			MaxRetries:  0,
 		}
 		rClient := redis.NewClusterClient(opts)
 		if rClient != nil {
 			defer rClient.Close()
-			ctx := context.Background()
+			ctx, cancel := context.WithTimeout(context.Background(), util.DialTimeOutDuration)
+			defer cancel()
 			res := rClient.Ping(ctx)
 			if res == nil || res.Err() != nil {
-				return s.OutPut(nil, errors.New(objcfg.Link+" redis-cluster connect failed."))
+				if res.Err() != nil {
+					return s.OutPut([]byte(objcfg.Link), res.Err())
+				}
+				return s.OutPut([]byte(objcfg.Link), errors.New("redis-cluster connect failed."))
 			}
 		} else {
-			return s.OutPut(nil, errors.New(objcfg.Link+" redis-cluster-opts link error."))
+			return s.OutPut([]byte(objcfg.Link), errors.New("redis-cluster-opts link error."))
 		}
 	} else {
-		return s.OutPut(nil, errors.New(objcfg.Link+" invailed redis mode"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("invailed redis mode"))
 	}
 	var b []byte
 	b = append(b, []byte(objcfg.Link)...)

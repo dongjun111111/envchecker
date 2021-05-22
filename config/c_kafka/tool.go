@@ -25,12 +25,14 @@ var err error
 func InitKafka(broker string) []byte {
 	businessProducerObj, err = newAccessLogProducer([]string{broker})
 	if err != nil {
-		return util.OutPut("[KafkaInit] ", nil, errors.New(broker+" init kafka failed."+err.Error()))
+		return util.OutPut("[KafkaInit] ", []byte(broker), err)
 	}
 	return util.OutPut("[KafkaInit] ", []byte(broker+" init kafka succeed!"), nil)
 }
 func newAccessLogProducer(brokerList []string) (sarama.AsyncProducer, error) {
 	config := sarama.NewConfig()
+	config.Producer.Timeout = util.DialTimeOutDuration
+	config.Net.DialTimeout = util.DialTimeOutDuration
 	config.Producer.RequiredAcks = sarama.WaitForLocal       // Only wait for the leader to ack
 	config.Producer.Compression = sarama.CompressionSnappy   // Compress messages
 	config.Producer.Flush.Frequency = 500 * time.Millisecond // Flush batches every 500ms
@@ -75,6 +77,8 @@ func NewAccessLogConsumer(broker string, topics string, groupId string, m *melod
 		defer businessProducerObj.Close()
 	}
 	config := cluster.NewConfig()
+	config.Config.Net.DialTimeout = util.DialTimeOutDuration
+	config.Consumer.MaxWaitTime = util.DialTimeOutDuration
 	config.Consumer.Return.Errors = true
 	config.Group.Return.Notifications = true
 	config.Consumer.Offsets.Initial = sarama.OffsetNewest

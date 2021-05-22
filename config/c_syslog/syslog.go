@@ -2,9 +2,9 @@ package c_syslog
 
 import (
 	"errors"
-	"log/syslog"
 	"goroot/config"
 	"goroot/util"
+	"log/syslog"
 	"strings"
 )
 
@@ -20,15 +20,15 @@ func (s *Obj_Syslog) OutPut(v []byte, arg ...error) (res []byte) {
 func (s *Obj_Syslog) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut(nil, errors.New(objcfg.Link+" empty syslog dsn"))
+		return s.OutPut([]byte(objcfg.Link), errors.New(objcfg.Link+"empty syslog dsn"))
 	}
 	linkArr := strings.Split(objcfg.Link, ":")
 	if len(linkArr) != 2 {
-		return s.OutPut(nil, errors.New(objcfg.Link+" wrong syslog dsn"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("wrong syslog dsn"))
 	}
 	_, err := syslog.Dial(linkArr[0], linkArr[1], syslog.LOG_ERR, "Saturday")
 	if err != nil {
-		return s.OutPut(nil, errors.New(objcfg.Link+" consul connect failed."+err.Error()))
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
 	var b []byte
 	b = append(b, []byte(objcfg.Link)...)

@@ -19,7 +19,7 @@ var (
 
 	KafkaConsumerWaitDuration = 30 * time.Second
 	AutoRefreshWaitDuration   = 5 * time.Second
-	ApolloTouchWaitDuration   = 3 * time.Second
+	DialTimeOutDuration       = 3 * time.Second
 
 	Port = ":8080"
 )
@@ -40,7 +40,7 @@ func OutPut(objName string, v []byte, arg ...error) (res []byte) {
 		FLock.Lock()
 		defer FLock.Unlock()
 		TotalFailedJob_Num++
-		failed := []byte(objName + string(v) + arg[0].Error())
+		failed := []byte(objName + " " + string(v) + " " + arg[0].Error())
 		FailedProces = append(FailedProces, failed)
 		return failed
 	}
