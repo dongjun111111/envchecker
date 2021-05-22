@@ -4,4 +4,5 @@
 *  默认开放端口: 8080
 *  配置文件: config.ini
 *  启动: go run *.go
-*  ![avatar](./envchecker.png)
+*  操作界面：
+![envchecker.png](https://i.loli.net/2021/05/22/jQiboyZPzphwlXC.png)
