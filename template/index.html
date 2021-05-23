@@ -30,7 +30,7 @@
 <body>	
     <center>
       <h3 id="head1">配置检测服务</h3>      
-      <button id="btn">启动</button> <button id="btn2">自动刷新</button><button id="btn3">暂停刷新</button>  
+      <button id="btn">启动</button> <button id="btn2">自动刷新</button><button id="btn3">暂停刷新</button> 
       <pre id="action_windows">
         等待启动...
       </pre>          
@@ -51,9 +51,9 @@
         }
         var line =  msg.data + "\n";
        if (msg.data.indexOf("、") != -1) {
-          action_windows.innerHTML +="<span style='color:red'>"+line+"</span>";
+          action_windows.innerHTML +="<span style='color:red;word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
         }else{
-          action_windows.innerHTML +="<span style=''>"+line+"</span>";
+          action_windows.innerHTML +="<span style='word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
         }
       };
       
