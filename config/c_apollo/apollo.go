@@ -13,7 +13,7 @@ type Obj_Apollo struct {
 }
 
 func (s *Obj_Apollo) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Apollo] "
+	s.ObjName = "[Apollo]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

@@ -16,7 +16,7 @@ type Obj_Apm struct {
 }
 
 func (s *Obj_Apm) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Apm] "
+	s.ObjName = "[Apm]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

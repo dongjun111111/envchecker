@@ -42,15 +42,24 @@ type Apollo struct {
 	Apollo_NamespaceName string `gcfg:"NamespaceName"`
 }
 
+type Clickhouse struct {
+	Link []string
+}
+type Postgres struct {
+	Link []string
+}
+
 var Config = struct {
-	Apm    Apm
-	Consul Consul
-	ES     ES
-	Mysql  Mysql
-	Redis  Redis
-	Syslog Syslog
-	Kafka  Kafka
-	Apollo Apollo
+	Apm        Apm
+	Consul     Consul
+	ES         ES
+	Mysql      Mysql
+	Redis      Redis
+	Syslog     Syslog
+	Kafka      Kafka
+	Apollo     Apollo
+	Clickhouse Clickhouse
+	Postgres   Postgres
 }{}
 
 func Setup() {

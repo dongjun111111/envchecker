@@ -25,9 +25,9 @@ var err error
 func InitKafka(broker string) []byte {
 	businessProducerObj, err = newAccessLogProducer([]string{broker})
 	if err != nil {
-		return util.OutPut("[KafkaInit] ", []byte(broker), err)
+		return util.OutPut("[KafkaInit]", []byte(broker), err)
 	}
-	return util.OutPut("[KafkaInit] ", []byte(broker+" init kafka succeed!"), nil)
+	return util.OutPut("[KafkaInit]", []byte(broker+" init kafka succeed!"), nil)
 }
 func newAccessLogProducer(brokerList []string) (sarama.AsyncProducer, error) {
 	config := sarama.NewConfig()
@@ -89,9 +89,8 @@ func NewAccessLogConsumer(broker string, topics string, groupId string, m *melod
 	if err != nil {
 		log.Printf("%s: sarama.NewSyncProducer err, message=%s \n", groupId, err)
 		var b []byte
-		b = append(b, []byte("[KafkaConsumer] ")...)
 		b = append(b, []byte(broker)...)
-		b = append(b, []byte(err.Error())...)
+		b = util.OutPut("[KafkaConsumer]", b, err)
 		m.Broadcast(b)
 		kafkaConsumerCh <- 1
 		return
@@ -117,20 +116,18 @@ func NewAccessLogConsumer(broker string, topics string, groupId string, m *melod
 				consumer.MarkOffset(msg, "")
 				log.Println("rcv kafka messages : ", msg.Topic, string(msg.Key), string(msg.Value))
 				var b []byte
-				b = append(b, []byte("[KafkaConsumer] ")...)
 				b = append(b, []byte(broker)...)
 				b = append(b, []byte(" Received kafka message:")...)
 				b = append(b, msg.Value...)
-				b = util.OutPut("[KafkaConsumer] ", b, nil)
+				b = util.OutPut("[KafkaConsumer]", b, nil)
 				m.Broadcast(b)
 				kafkaConsumerCh <- 1
 				goto END
 			}
 		case <-time.After(util.KafkaConsumerWaitDuration):
 			var b []byte
-			b = append(b, []byte("[KafkaConsumer] ")...)
 			b = append(b, []byte(broker)...)
-			b = append(b, []byte(" 30 secs timeout ,auto exit")...)
+			b = util.OutPut("[KafkaConsumer]", b, errors.New("30 secs timeout ,auto exit"))
 			m.Broadcast(b)
 			goto END
 		}

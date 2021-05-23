@@ -13,7 +13,7 @@ type Obj_Syslog struct {
 }
 
 func (s *Obj_Syslog) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Syslog] "
+	s.ObjName = "[Syslog]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

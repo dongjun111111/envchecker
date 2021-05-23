@@ -15,7 +15,7 @@ type Obj_Mysql struct {
 }
 
 func (s *Obj_Mysql) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Mysql] "
+	s.ObjName = "[MySQL]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

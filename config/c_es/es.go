@@ -24,7 +24,7 @@ type Obj_ES struct {
 }
 
 func (s *Obj_ES) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Elasticsearch] "
+	s.ObjName = "[Elasticsearch]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

@@ -11,7 +11,7 @@ type Obj_Kafka struct {
 }
 
 func (s *Obj_Kafka) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[KafkaProducer] "
+	s.ObjName = "[KafkaProducer]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 

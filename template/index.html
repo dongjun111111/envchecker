@@ -49,16 +49,16 @@
         if (msg.data == "auto-refresh" || msg.data == "start") {
           action_windows.innerText = "";
         }
-        // var para = document.createElement("p");
-        // var node = document.createTextNode("这是新文本");
-        // para.appendChild(node);
-        // action_windows.appendChild(para);
         var line =  msg.data + "\n";
-        action_windows.innerText +=line;
+       if (msg.data.indexOf("、") != -1) {
+          action_windows.innerHTML +="<span style='color:red'>"+line+"</span>";
+        }else{
+          action_windows.innerHTML +="<span style=''>"+line+"</span>";
+        }
       };
       
       btn.onclick = function (e) {
-       action_windows.innerText ="";    //   放开这个，每次点击都会覆盖老的，不会追加写       
+       action_windows.innerText ="";      
        ws.send("start");          
       };
 

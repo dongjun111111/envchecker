@@ -14,13 +14,13 @@ type Obj_Consul struct {
 }
 
 func (s *Obj_Consul) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Consul] "
+	s.ObjName = "[Consul]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 func (s *Obj_Consul) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut(nil, errors.New("empty consul link"))
+		return s.OutPut([]byte(objcfg.Link), errors.New("empty consul link"))
 	}
 	config := api.DefaultConfig()
 	config.Address = objcfg.Link
@@ -30,8 +30,8 @@ func (s *Obj_Consul) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	}
 	client, err := api.NewClient(config)
 	if err != nil {
-		log.Println("checkconsul  initclient failed, err:", err)
-		return s.OutPut(nil, errors.New("consul connect failed."+err.Error()))
+		log.Println("checkconsul initclient failed, err:", err)
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
 	pair := &api.KVPair{
 		Key: "env",
@@ -39,7 +39,7 @@ func (s *Obj_Consul) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	kv := client.KV()
 	if p, _, err := kv.Get(pair.Key, nil); err != nil {
 		log.Println("checkconsul failed, err:", err)
-		return s.OutPut(nil, errors.New("consul connect failed."+err.Error()))
+		return s.OutPut([]byte(objcfg.Link), err)
 	} else {
 		log.Println(p.Key, "=>", string(p.Value))
 	}

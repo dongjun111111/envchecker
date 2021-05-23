@@ -5,10 +5,12 @@ import (
 	"goroot/config"
 	"goroot/config/c_apm"
 	"goroot/config/c_apollo"
+	"goroot/config/c_clickhouse"
 	"goroot/config/c_consul"
 	"goroot/config/c_es"
 	"goroot/config/c_kafka"
 	"goroot/config/c_mysql"
+	"goroot/config/c_postgres"
 	"goroot/config/c_redis"
 	"goroot/config/c_syslog"
 	"goroot/util"
@@ -20,6 +22,7 @@ import (
 )
 
 func ActionOnce(m *melody.Melody) {
+	m.Broadcast([]byte("[BEGIN]"))
 	m.Broadcast([]byte("Process:"))
 	startTimestamp := time.Now()
 	m.Broadcast([]byte("Start at:" + startTimestamp.Format("2006-01-02 15:04:05.000")))
@@ -77,6 +80,26 @@ func ActionOnce(m *melody.Melody) {
 				Wg:   wg}))
 		}
 
+		//clickhouse
+		ch_dsns := util.Config.Clickhouse.Link
+		for i := 0; i < len(ch_dsns); i++ {
+			wg.Add(1)
+			funcObj = &c_clickhouse.Obj_Clickhouse{}
+			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
+				Link: ch_dsns[i],
+				Wg:   wg}))
+		}
+
+		//postgres
+		pq_dsns := util.Config.Postgres.Link
+		for i := 0; i < len(pq_dsns); i++ {
+			wg.Add(1)
+			funcObj = &c_postgres.Obj_Postgres{}
+			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
+				Link: pq_dsns[i],
+				Wg:   wg}))
+		}
+
 		//apm
 		apm_dsns := util.Config.Apm.Link
 		for i := 0; i < len(apm_dsns); i++ {
@@ -114,14 +137,13 @@ func ActionOnce(m *melody.Melody) {
 		select {
 		case <-kafkaConsumerCh:
 		case <-time.After(util.KafkaConsumerWaitDuration):
-			m.Broadcast(util.OutPut("[KafkaConsumer] ", []byte(broker), errors.New("Had waited 30 secs for kakfa-consumer,auto skip!")))
+			m.Broadcast(util.OutPut("[KafkaConsumer]", []byte(broker), errors.New("Had waited 30 secs for kakfa-consumer,auto skip!")))
 		}
 		goto END
 	}
 END:
 	duration := time.Now().Sub(startTimestamp)
 	m.Broadcast([]byte("Finish at:" + time.Now().Format("2006-01-02 15:04:05.000")))
-	m.Broadcast([]byte(""))
 	m.Broadcast([]byte(""))
 	m.Broadcast([]byte(""))
 	m.Broadcast([]byte("Summary:"))
@@ -138,6 +160,7 @@ END:
 	} else {
 		m.Broadcast([]byte("Congratulations, all jobs are completed!"))
 	}
+	m.Broadcast([]byte("[END]"))
 	util.InitNumbers()
 }
 

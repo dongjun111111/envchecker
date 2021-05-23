@@ -17,7 +17,7 @@ type Obj_Redis struct {
 }
 
 func (s *Obj_Redis) OutPut(v []byte, arg ...error) (res []byte) {
-	s.ObjName = "[Redis] "
+	s.ObjName = "[Redis]"
 	return util.OutPut(s.ObjName, v, arg...)
 }
 
