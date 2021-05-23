@@ -52,7 +52,9 @@
         var line =  msg.data + "\n";
        if (msg.data.indexOf("、") != -1) {
           action_windows.innerHTML +="<span style='color:red;word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
-        }else{
+        } else if (msg.data.indexOf("Congratulations") !=-1){
+          action_windows.innerHTML +="<span style='color:green;word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
+        } else {
           action_windows.innerHTML +="<span style='word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
         }
       };

@@ -38,19 +38,18 @@ func InitNumbers() {
 func OutPut(objName string, v []byte, arg ...error) (res []byte) {
 	if len(arg) > 0 && arg[0] != nil {
 		FLock.Lock()
-		defer FLock.Unlock()
 		TotalFailedJob_Num++
+		FLock.Unlock()
 		failed := []byte(objName + " " + string(v) + " " + arg[0].Error())
 		FailedProces = append(FailedProces, failed)
 		return failed
 	}
 	SLock.Lock()
-	defer SLock.Unlock()
 	TotalSucceedJob_Num++
-	var resF []byte
+	SLock.Unlock()
+	resF := []byte(objName)
 	v = bytes.TrimPrefix(bytes.TrimSuffix(v, []byte(`"`)), []byte(`"`))
 	v = append(v, []byte(" ->  Connected/Action succeed !")...)
-	resF = []byte(objName)
 	res = append(resF, v...)
 	return
 }
