@@ -16,4 +16,4 @@
     - Clickhouse
     - PostgreSQL
 -  操作界面：
-![envchecker.png](https://i.loli.net/2021/05/23/sTpLgyM3IJZkPhn.png)
+![envchecker.png](https://i.loli.net/2021/05/24/GyKFUEr63cq8Hox.png)
