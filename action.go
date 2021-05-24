@@ -70,7 +70,7 @@ func ActionOnce(m *melody.Melody) {
 				Wg:   wg}))
 		}
 
-		//rsyslog
+		//syslog
 		sys_dsns := util.Config.Syslog.Link
 		for i := 0; i < len(sys_dsns); i++ {
 			wg.Add(1)

@@ -3,13 +3,14 @@ package main
 import (
 	"goroot/util"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	melody "gopkg.in/olahol/melody.v1"
 )
 
 func main() {
-	util.Setup()
+	util.Setup("")
 	r := gin.Default()
 	m := melody.New()
 	r.GET("/", func(c *gin.Context) {
@@ -20,6 +21,16 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
+		if strings.Contains(string(msg), "update-config") {
+			str := strings.ReplaceAll(string(msg), "update-config", "")
+			err := util.Setup(str)
+			if err != nil {
+				m.Broadcast([]byte("update-config failed," + err.Error()))
+			} else {
+				m.Broadcast([]byte("update-config succeed!"))
+			}
+			return
+		}
 		switch string(msg) {
 		case "start":
 			ActionOnce(m)

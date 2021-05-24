@@ -12,7 +12,7 @@
       height: auto;
       padding: 20px;
     }
-    #btn,#btn2,#btn3 {
+    #btn,#btn2,#btn3,#btn0,#updateBtn {
       width: auto;
       height: 30px;
       font-size: 20px;
@@ -25,15 +25,20 @@
     #head1 {
       font-size: 40px;
     }
+    #config {          
+      display: none;
+    }    
   </style>
 </head>
 <body>	
     <center>
-      <h3 id="head1">配置检测服务</h3>      
-      <button id="btn">启动</button> <button id="btn2">自动刷新</button><button id="btn3">暂停刷新</button> 
-      <pre id="action_windows">
-        等待启动...
-      </pre>          
+      <h3 id="head1">配置检测服务</h3>
+      <div id="config">
+      <textarea id="content"></textarea>
+      <button id="btn0">更新</button>
+      </div>
+      <button id="updateBtn">更新配置</button> <button id="btn">启动</button> <button id="btn2">自动刷新/5s</button><button id="btn3">暂停刷新</button> 
+      <pre id="action_windows">等待启动...</pre>          
     </center>    
 
     <script>
@@ -41,9 +46,11 @@
       var ws = new WebSocket(url);
       
       var action_windows = document.getElementById("action_windows");
+      var btn0 = document.getElementById("btn0");
+      var updateBtn =document.getElementById("updateBtn");
       var btn = document.getElementById("btn");
       var btn2 = document.getElementById("btn2");
-      var btn3 = document.getElementById("btn3");
+      var btn3 = document.getElementById("btn3");      
 
       ws.onmessage = function (msg) {
         if (msg.data == "auto-refresh" || msg.data == "start") {
@@ -58,37 +65,51 @@
           action_windows.innerHTML +="<span style='word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;'>"+line+"</span>";
         }
       };
-      
+
+      updateBtn.onclick = function (e) {        
+        document.getElementById("config").style.display ="table";
+        this.style.display = "none";
+        action_windows.innerText ="";
+      };
+
+      btn0.onclick = function (e) {
+        document.getElementById("updateBtn").style.display ="inline";
+        document.getElementById("config").style.display ="none";
+        var content = document.getElementById("content").value;
+        action_windows.innerText ="";       
+        ws.send("update-config"+content);          
+      };
+  
       btn.onclick = function (e) {
-       action_windows.innerText ="";      
-       ws.send("start");          
+        action_windows.innerText ="";      
+        ws.send("start");          
       };
 
       btn2.onclick = function (e) {
-       this.disabled=true;  
-       this.innerText="已自动刷新";  
-       this.style.background = "gray"; 
+        this.disabled=true;  
+        this.innerText="已自动刷新";  
+        this.style.background = "gray"; 
 
-       document.getElementById("btn").disabled=true;
-       document.getElementById("btn").style.background = "gray"; 
+        document.getElementById("btn").disabled=true;
+        document.getElementById("btn").style.background = "gray"; 
 
-       document.getElementById("btn3").style.background = "green"; 
-       document.getElementById("btn3").disabled = false; 
-       action_windows.innerText ="";             
-       ws.send("auto-refresh");          
+        document.getElementById("btn3").style.background = "green"; 
+        document.getElementById("btn3").disabled = false; 
+        action_windows.innerText ="";             
+        ws.send("auto-refresh");          
       };
 
       btn3.onclick = function (e) {  
-       this.disabled=true;  
-       document.getElementById("btn").disabled=false;
-       document.getElementById("btn").style.background = "green";  
+        this.disabled=true;
+        document.getElementById("btn").disabled=false;
+        document.getElementById("btn").style.background = "green";  
 
-       document.getElementById("btn2").disabled=false;
-       document.getElementById("btn2").style.background = "green"; 
-       document.getElementById("btn2").innerText="自动刷新";
+        document.getElementById("btn2").disabled=false;
+        document.getElementById("btn2").style.background = "green"; 
+        document.getElementById("btn2").innerText="自动刷新";
 
-       document.getElementById("btn3").style.background = "gray";  
-       ws.send("suspend");          
+        document.getElementById("btn3").style.background = "gray";  
+        ws.send("suspend");          
       };
     </script>
 </body>

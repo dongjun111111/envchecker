@@ -2,6 +2,7 @@ package util
 
 import (
 	"log"
+	"strings"
 
 	"gopkg.in/gcfg.v1"
 )
@@ -49,7 +50,7 @@ type Postgres struct {
 	Link []string
 }
 
-var Config = struct {
+var config = struct {
 	Apm        Apm
 	Consul     Consul
 	ES         ES
@@ -62,10 +63,21 @@ var Config = struct {
 	Postgres   Postgres
 }{}
 
-func Setup() {
+var Config = config
+
+func Setup(src string) error {
 	var err error
-	err = gcfg.ReadFileInto(&Config, "config/config.ini")
-	if err != nil {
-		log.Fatalf("Failed to parse config file: %v", err)
+	if src == "" {
+		err = gcfg.ReadFileInto(&Config, "config/config.ini")
+	} else {
+		Config = config
+		err = gcfg.ReadStringInto(&Config, strings.ReplaceAll(src, "update-config", ""))
+		if err != nil {
+			log.Println("Failed to parse "+src+":", err)
+		}
 	}
+	if err != nil {
+		log.Println("Failed to parse config file:", err)
+	}
+	return err
 }
