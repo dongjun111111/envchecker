@@ -1,6 +1,7 @@
 package c_apollo
 
 import (
+	"log"
 	"errors"
 	"goroot/config"
 	"goroot/util"
@@ -18,7 +19,10 @@ func (s *Obj_Apollo) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Apollo) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
+	if objcfg.Apollo_Link == "" {
+		log.Println("empty apollo link")
+		return
+	}
 	url := objcfg.Apollo_Link + "/configs/" + objcfg.Apollo_Appid + "/" + objcfg.Apollo_Cluster + "/" + objcfg.Apollo_NamespaceName
 	if !strings.Contains(objcfg.Apollo_Link, "http") {
 		url = "http://" + url

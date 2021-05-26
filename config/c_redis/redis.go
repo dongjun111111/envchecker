@@ -5,6 +5,7 @@ import (
 	"errors"
 	"goroot/config"
 	"goroot/util"
+	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -22,14 +23,15 @@ func (s *Obj_Redis) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Redis) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty redis dsn"))
+		log.Println("empty redis dsn")
+		return
 	}
 
 	u, err := url.Parse(objcfg.Link)
 	if err != nil {
-		return s.OutPut([]byte(objcfg.Link), errors.New(" redis link parse failed."))
+		log.Println(objcfg.Link, " redis link parse failed", err)
+		return
 	}
 
 	if u.Scheme == "redis" {

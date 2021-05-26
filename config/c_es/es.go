@@ -29,10 +29,13 @@ func (s *Obj_ES) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_ES) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
+	if objcfg.Link == "" {
+		log.Println("empty es link")
+		return
+	}
 	db, err := NewEsDB(&Config{EsAddrs: []string{objcfg.Link}})
 	if err != nil {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty es link"))
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
 	body := map[string]interface{}{
 		"test_idx": "test_idx",

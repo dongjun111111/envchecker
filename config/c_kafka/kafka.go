@@ -1,7 +1,7 @@
 package c_kafka
 
 import (
-	"errors"
+	"log"
 	"goroot/config"
 	"goroot/util"
 )
@@ -16,9 +16,9 @@ func (s *Obj_Kafka) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Kafka) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty kafka link"))
+		log.Println("empty kafka link")
+		return
 	}
 	err := SendMessage(objcfg.Kafka_Data, objcfg.Kafka_TopicName)
 	if err != nil {

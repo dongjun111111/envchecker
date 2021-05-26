@@ -2,9 +2,9 @@ package c_postgres
 
 import (
 	"database/sql"
-	"errors"
 	"goroot/config"
 	"goroot/util"
+	"log"
 	"strings"
 
 	"gorm.io/driver/postgres"
@@ -21,9 +21,9 @@ func (s *Obj_Postgres) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Postgres) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty PostgreSQL dsn"))
+		log.Println("empty PostgreSQL dsn")
+		return
 	}
 	if !strings.Contains(objcfg.Link, "timeout") {
 		objcfg.Link += "&timeout=3s"

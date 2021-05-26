@@ -21,9 +21,9 @@ func (s *Obj_Clickhouse) OutPut(v []byte, arg ...error) (res []byte) {
 	return util.OutPut(s.ObjName, v, arg...)
 }
 func (s *Obj_Clickhouse) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty clickhouse link"))
+		log.Println("empty clickhouse link")
+		return
 	}
 	connect, err := sql.Open("clickhouse", objcfg.Link)
 	if err != nil {
@@ -36,7 +36,7 @@ func (s *Obj_Clickhouse) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	if err := connect.Ping(); err != nil {
 		if exception, ok := err.(*clickhouse.Exception); ok {
 			errStr := fmt.Sprintf("[%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
-			log.Println(errStr)
+			log.Println(exception.Code, exception.Message, exception.StackTrace)
 			return s.OutPut([]byte(objcfg.Link), errors.New(errStr))
 		} else {
 			log.Println(err)

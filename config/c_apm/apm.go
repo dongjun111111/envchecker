@@ -21,9 +21,9 @@ func (s *Obj_Apm) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Apm) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty apm link"))
+		log.Println("empty apm link")
+		return
 	}
 	trans, err := transport.NewHTTPTransport()
 	if err != nil {
@@ -32,8 +32,8 @@ func (s *Obj_Apm) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	}
 	u, err := url.Parse(objcfg.Link)
 	if err != nil {
-		log.Println("get apm-server error.", err)
-		return s.OutPut([]byte(objcfg.Link), errors.New("get apm-server error."+err.Error()))
+		log.Println(objcfg.Link, " get apm-server error.", err)
+		return
 	}
 	trans.SetServerURL(u)
 	apm.DefaultTracer.Transport = trans

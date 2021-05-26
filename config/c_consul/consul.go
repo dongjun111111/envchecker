@@ -1,7 +1,6 @@
 package c_consul
 
 import (
-	"errors"
 	"goroot/config"
 	"goroot/util"
 	"log"
@@ -18,9 +17,9 @@ func (s *Obj_Consul) OutPut(v []byte, arg ...error) (res []byte) {
 	return util.OutPut(s.ObjName, v, arg...)
 }
 func (s *Obj_Consul) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty consul link"))
+		log.Println("empty consul link")
+		return
 	}
 	config := api.DefaultConfig()
 	config.Address = objcfg.Link

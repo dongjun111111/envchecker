@@ -34,110 +34,163 @@ func ActionOnce(m *melody.Melody) {
 		m_dsns := util.Config.Mysql.Link
 		for i := 0; i < len(m_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_mysql.Obj_Mysql{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: m_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_mysql.Obj_Mysql{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: m_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//redis
 		r_dsns := util.Config.Redis.Link
 		for i := 0; i < len(r_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_redis.Obj_Redis{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: r_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_redis.Obj_Redis{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: r_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//es
 		es_dsns := util.Config.ES.Link
 		for i := 0; i < len(es_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_es.Obj_ES{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: es_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_es.Obj_ES{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: es_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//consul
 		cn_dsns := util.Config.Consul.Link
 		for i := 0; i < len(cn_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_consul.Obj_Consul{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: cn_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_consul.Obj_Consul{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: cn_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//syslog
 		sys_dsns := util.Config.Syslog.Link
 		for i := 0; i < len(sys_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_syslog.Obj_Syslog{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: sys_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_syslog.Obj_Syslog{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: sys_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//clickhouse
 		ch_dsns := util.Config.Clickhouse.Link
 		for i := 0; i < len(ch_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_clickhouse.Obj_Clickhouse{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: ch_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_clickhouse.Obj_Clickhouse{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: ch_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//postgres
 		pq_dsns := util.Config.Postgres.Link
 		for i := 0; i < len(pq_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_postgres.Obj_Postgres{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: pq_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_postgres.Obj_Postgres{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: pq_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//apm
 		apm_dsns := util.Config.Apm.Link
 		for i := 0; i < len(apm_dsns); i++ {
 			wg.Add(1)
-			funcObj = &c_apm.Obj_Apm{}
-			go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-				Link: apm_dsns[i],
-				Wg:   wg}))
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_apm.Obj_Apm{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: apm_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
 		}
 
 		//apollo
 		wg.Add(1)
-		funcObj = &c_apollo.Obj_Apollo{}
-		go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-			Apollo_Link:          util.Config.Apollo.Link,
-			Apollo_Appid:         util.Config.Apollo.Apollo_AppId,
-			Apollo_Cluster:       util.Config.Apollo.Apollo_Cluster,
-			Apollo_NamespaceName: util.Config.Apollo.Apollo_NamespaceName,
-			Wg:                   wg}))
+		go func(wgg *sync.WaitGroup) {
+			funcObj = &c_apollo.Obj_Apollo{}
+			res := funcObj.CheckObj(&config.ObjCfg{
+				Apollo_Link:          util.Config.Apollo.Link,
+				Apollo_Appid:         util.Config.Apollo.Apollo_AppId,
+				Apollo_Cluster:       util.Config.Apollo.Apollo_Cluster,
+				Apollo_NamespaceName: util.Config.Apollo.Apollo_NamespaceName})
+			if res != nil {
+				m.Broadcast(res)
+			}
+			wgg.Done()
+		}(wg)
 
 		//kafka
 		broker := util.Config.Kafka.Link
-		topic := util.Config.Kafka.Kafka_Topic
-		m.Broadcast(c_kafka.InitKafka(broker))
 		kafkaConsumerCh := make(chan int)
-		go c_kafka.NewAccessLogConsumer(broker, topic, "group-1", m, kafkaConsumerCh)
-		wg.Add(1)
-		funcObj = &c_kafka.Obj_Kafka{}
-		go m.Broadcast(funcObj.CheckObj(&config.ObjCfg{
-			Link: broker, Kafka_TopicName: topic,
-			Kafka_Data: []byte("test-kafka-msg @ " + time.Now().Format("2006-01-02 15:04:05.000")),
-			Wg:         wg}))
-
+		if broker != "" {
+			topic := util.Config.Kafka.Kafka_Topic
+			m.Broadcast(c_kafka.InitKafka(broker))
+			go c_kafka.NewAccessLogConsumer(broker, topic, "group-1", m, kafkaConsumerCh)
+			wg.Add(1)
+			go func(wgg *sync.WaitGroup) {
+				funcObj = &c_kafka.Obj_Kafka{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: broker, Kafka_TopicName: topic,
+					Kafka_Data: []byte("test-kafka-msg @ " + time.Now().Format("2006-01-02 15:04:05.000"))})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(wg)
+		}
 		wg.Wait()
-		select {
-		case <-kafkaConsumerCh:
-		case <-time.After(util.KafkaConsumerWaitDuration):
-			m.Broadcast(util.OutPut("[KafkaConsumer]", []byte(broker), errors.New("Had waited 30 secs for kakfa-consumer,auto skip!")))
+		if broker != "" {
+			select {
+			case <-kafkaConsumerCh:
+			case <-time.After(util.KafkaConsumerWaitDuration):
+				m.Broadcast(util.OutPut("[KafkaConsumer]", []byte(broker), errors.New("Had waited 30 secs for kakfa-consumer,auto skip!")))
+			}
 		}
 		goto END
 	}

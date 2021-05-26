@@ -2,6 +2,7 @@ package c_syslog
 
 import (
 	"errors"
+        "log"
 	"goroot/config"
 	"goroot/util"
 	"log/syslog"
@@ -18,9 +19,9 @@ func (s *Obj_Syslog) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Syslog) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New(objcfg.Link+"empty syslog dsn"))
+		log.Println("empty syslog dsn")
+		return
 	}
 	linkArr := strings.Split(objcfg.Link, ":")
 	if len(linkArr) != 2 {

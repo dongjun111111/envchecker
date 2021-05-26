@@ -1,7 +1,7 @@
 package c_mysql
 
 import (
-	"errors"
+	"log"
 	"goroot/config"
 	"goroot/util"
 	"strings"
@@ -20,9 +20,9 @@ func (s *Obj_Mysql) OutPut(v []byte, arg ...error) (res []byte) {
 }
 
 func (s *Obj_Mysql) CheckObj(objcfg *config.ObjCfg) (res []byte) {
-	defer objcfg.Wg.Done()
 	if objcfg.Link == "" {
-		return s.OutPut([]byte(objcfg.Link), errors.New("empty mysql dsn"))
+		log.Println("empty mysql dsn")
+		return
 	}
 	if !strings.Contains(objcfg.Link, "timeout") {
 		objcfg.Link += "&timeout=3s"
