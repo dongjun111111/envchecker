@@ -43,6 +43,10 @@
 
     <script>
       var url = "ws://" + window.location.host + "/ws";
+      var ishttps = 'https:' == document.location.protocol ? true: false;      
+      if(ishttps){        
+        var url = "wss://" + window.location.host + "/ws";
+      }
       var ws = new WebSocket(url);
       
       var action_windows = document.getElementById("action_windows");
