@@ -32,8 +32,7 @@ func (s *Obj_Apm) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	}
 	u, err := url.Parse(objcfg.Link)
 	if err != nil {
-		log.Println(objcfg.Link, " get apm-server error.", err)
-		return
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
 	trans.SetServerURL(u)
 	apm.DefaultTracer.Transport = trans

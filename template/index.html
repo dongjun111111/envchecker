@@ -19,6 +19,9 @@
       background-color:green;
       color:white;
     }
+    #btn0 {
+      margin-bottom: 20px;
+    }
     #btn3 {
       background-color:gray;
     }
@@ -27,15 +30,15 @@
     }
     #config {          
       display: none;
-    }    
+    }
   </style>
 </head>
 <body>	
     <center>
       <h3 id="head1">配置检测服务</h3>
       <div id="config">
-      <textarea id="content"></textarea>
-      <button id="btn0">更新</button>
+      <textarea id="content" cols="80" rows="20"></textarea>
+      <p><button id="btn0">更新</button></p>
       </div>
       <button id="btn">启动</button>  <button id="btn2">自动刷新/5s</button><button id="btn3">暂停刷新</button>  <button id="updateBtn">更新配置</button>
       <pre id="action_windows">等待启动...</pre>          
@@ -80,8 +83,14 @@
         document.getElementById("updateBtn").style.display ="inline";
         document.getElementById("config").style.display ="none";
         var content = document.getElementById("content").value;
-        action_windows.innerText ="";       
-        ws.send("update-config"+content);          
+        action_windows.innerText =""; 
+        var content2 = "update-config"+content;
+        if (content2.length >1024/2){
+            alert("Config update failed!The content is too long,must less than 1024 bytes!");
+            window.location.reload();
+            return
+        }
+        ws.send(content2);        
       };
   
       btn.onclick = function (e) {

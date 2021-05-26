@@ -27,13 +27,10 @@ func (s *Obj_Redis) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		log.Println("empty redis dsn")
 		return
 	}
-
 	u, err := url.Parse(objcfg.Link)
 	if err != nil {
-		log.Println(objcfg.Link, " redis link parse failed", err)
-		return
+		return s.OutPut([]byte(objcfg.Link), err)
 	}
-
 	if u.Scheme == "redis" {
 		opts := &redis.Options{
 			Addr:        u.Host,
