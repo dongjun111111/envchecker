@@ -2,19 +2,31 @@ package main
 
 import (
 	"goroot/util"
-	"net/http"
+	"html/template"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gobuffalo/packr"
 	melody "gopkg.in/olahol/melody.v1"
 )
+
+func initTemplates() *template.Template {
+	box := packr.NewBox("./template")
+	t := template.New("")
+	tmpl := t.New("index.html")
+	data, _ := box.FindString("index.html")
+	tmpl.Parse(data)
+	return t
+}
 
 func main() {
 	util.Setup("")
 	r := gin.Default()
 	m := melody.New()
+
+	r.SetHTMLTemplate(initTemplates())
 	r.GET("/", func(c *gin.Context) {
-		http.ServeFile(c.Writer, c.Request, "template/index.html")
+		c.HTML(200, "index.html", nil)
 	})
 	r.GET("/ws", func(c *gin.Context) {
 		m.HandleRequest(c.Writer, c.Request)

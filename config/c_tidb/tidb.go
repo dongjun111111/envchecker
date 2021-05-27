@@ -1,13 +1,11 @@
 package c_tidb
 
 import (
-	"context"
 	"goroot/config"
 	"goroot/util"
 	"log"
 
-	tiConfig "github.com/tikv/client-go/config"
-	"github.com/tikv/client-go/rawkv"
+	"github.com/pingcap/tidb/store/tikv"
 )
 
 type Obj_Tidb struct {
@@ -24,13 +22,11 @@ func (s *Obj_Tidb) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		log.Println("empty tidb dsn")
 		return
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), util.DialTimeOutDuration)
-	defer cancel()
-	cli, err := rawkv.NewClient(ctx, []string{objcfg.Link}, tiConfig.Default())
+	driver := tikv.Driver{}
+	_, err := driver.Open(objcfg.Link)
 	if err != nil {
 		return s.OutPut([]byte(objcfg.Link), err)
 	}
-	defer cli.Close()
 	var b []byte
 	b = append(b, []byte(objcfg.Link)...)
 	return s.OutPut(b, nil)
