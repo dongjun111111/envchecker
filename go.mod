@@ -10,6 +10,7 @@ require (
 	github.com/coocood/freecache v1.1.1 // indirect
 	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/elastic/go-elasticsearch/v6 v6.8.10
+	github.com/flink-go/api v0.0.1
 	github.com/garyburd/redigo v1.6.2
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-ini/ini v1.62.0
@@ -19,6 +20,8 @@ require (
 	github.com/hashicorp/consul/api v1.8.1
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/philchia/agollo/v4 v4.1.3
+	github.com/tikv/client-go v0.0.0-20210412055529-d811a08025fa
+	github.com/tsuna/gohbase v0.0.0-20201125011725-348991136365
 	github.com/zouyx/agollo v1.9.0
 	go.elastic.co/apm v1.11.0
 	gopkg.in/gcfg.v1 v1.2.3

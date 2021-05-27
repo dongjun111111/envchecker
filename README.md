@@ -17,5 +17,8 @@
     - Syslog
     - Clickhouse
     - PostgreSQL
+    - Flink
+    - Hbase
+    - Tidb
 -  操作界面：
 ![envchecker.png](https://i.loli.net/2021/05/26/SdXfFGArQExsiJt.png)

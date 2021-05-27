@@ -49,6 +49,17 @@ type Clickhouse struct {
 type Postgres struct {
 	Link []string
 }
+type Hbase struct {
+	Link []string
+}
+
+type Flink struct {
+	Link []string
+}
+
+type Tidb struct {
+	Link []string
+}
 
 var config = struct {
 	Apm        Apm
@@ -61,6 +72,9 @@ var config = struct {
 	Apollo     Apollo
 	Clickhouse Clickhouse
 	Postgres   Postgres
+	Hbase      Hbase
+	Flink      Flink
+	Tidb       Tidb
 }{}
 
 var Config = config

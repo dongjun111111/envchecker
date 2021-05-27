@@ -8,11 +8,14 @@ import (
 	"goroot/config/c_clickhouse"
 	"goroot/config/c_consul"
 	"goroot/config/c_es"
+	"goroot/config/c_flink"
+	"goroot/config/c_hbase"
 	"goroot/config/c_kafka"
 	"goroot/config/c_mysql"
 	"goroot/config/c_postgres"
 	"goroot/config/c_redis"
 	"goroot/config/c_syslog"
+	"goroot/config/c_tidb"
 	"goroot/util"
 	"strconv"
 	"sync"
@@ -128,6 +131,51 @@ func ActionOnce(m *melody.Melody) {
 				funcObj = &c_postgres.Obj_Postgres{}
 				res := funcObj.CheckObj(&config.ObjCfg{
 					Link: pq_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
+		}
+
+		//flink
+		fk_dsns := util.Config.Flink.Link
+		for i := 0; i < len(fk_dsns); i++ {
+			wg.Add(1)
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_flink.Obj_Flink{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: fk_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
+		}
+
+		//hbase
+		hb_dsns := util.Config.Hbase.Link
+		for i := 0; i < len(hb_dsns); i++ {
+			wg.Add(1)
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_hbase.Obj_Hbase{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: hb_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
+		}
+
+		//tidb
+		ti_dsns := util.Config.Tidb.Link
+		for i := 0; i < len(ti_dsns); i++ {
+			wg.Add(1)
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_tidb.Obj_Tidb{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: ti_dsns[i2]})
 				if res != nil {
 					m.Broadcast(res)
 				}
