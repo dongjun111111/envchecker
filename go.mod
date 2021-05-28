@@ -20,6 +20,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/consul/api v1.8.1
+	github.com/hashicorp/go-syslog v1.0.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/juju/errors v0.0.0-20200330140219-3fe23663418f // indirect
 	github.com/philchia/agollo/v4 v4.1.3

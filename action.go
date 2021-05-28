@@ -5,6 +5,7 @@ import (
 	"goroot/config"
 	"goroot/config/c_apm"
 	"goroot/config/c_apollo"
+	"goroot/config/c_basic"
 	"goroot/config/c_clickhouse"
 	"goroot/config/c_consul"
 	"goroot/config/c_es"
@@ -176,6 +177,21 @@ func ActionOnce(m *melody.Melody) {
 				funcObj = &c_tidb.Obj_Tidb{}
 				res := funcObj.CheckObj(&config.ObjCfg{
 					Link: ti_dsns[i2]})
+				if res != nil {
+					m.Broadcast(res)
+				}
+				wgg.Done()
+			}(i, wg)
+		}
+
+		//basic
+		bs_dsns := util.Config.Basic.Link
+		for i := 0; i < len(bs_dsns); i++ {
+			wg.Add(1)
+			go func(i2 int, wgg *sync.WaitGroup) {
+				funcObj = &c_basic.Obj_Basic{}
+				res := funcObj.CheckObj(&config.ObjCfg{
+					Link: bs_dsns[i2]})
 				if res != nil {
 					m.Broadcast(res)
 				}

@@ -61,6 +61,11 @@ type Tidb struct {
 	Link []string
 }
 
+type Basic struct {
+	Link []string
+}
+
+
 var config = struct {
 	Apm        Apm
 	Consul     Consul
@@ -75,6 +80,7 @@ var config = struct {
 	Hbase      Hbase
 	Flink      Flink
 	Tidb       Tidb
+	Basic      Basic
 }{}
 
 var Config = config
