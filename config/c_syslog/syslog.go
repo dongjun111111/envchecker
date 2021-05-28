@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	gsyslog "github.com/hashicorp/go-syslog"
+	"log/syslog"
 )
 
 type Obj_Syslog struct {
@@ -28,7 +28,7 @@ func (s *Obj_Syslog) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 	if len(linkArr) != 2 {
 		return s.OutPut([]byte(objcfg.Link), errors.New("wrong syslog dsn"))
 	}
-	_, err := gsyslog.DialLogger(linkArr[0], linkArr[1], gsyslog.LOG_ERR, "", "test")
+	_, err := syslog.Dial(linkArr[0], linkArr[1], syslog.LOG_ERR, "Saturday")
 	if err != nil {
 		return s.OutPut([]byte(objcfg.Link), err)
 	}

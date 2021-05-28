@@ -2,6 +2,9 @@ package util
 
 import (
 	"bytes"
+	"errors"
+	"net"
+	"strings"
 	"sync"
 	"time"
 )
@@ -47,9 +50,32 @@ func OutPut(objName string, v []byte, arg ...error) (res []byte) {
 	SLock.Lock()
 	TotalSucceedJob_Num++
 	SLock.Unlock()
-	resF := []byte(objName)
+	resF := []byte(objName + " ")
 	v = bytes.TrimPrefix(bytes.TrimSuffix(v, []byte(`"`)), []byte(`"`))
 	v = append(v, []byte(" ->  Connected/Action succeed !")...)
 	res = append(resF, v...)
 	return
+}
+
+func NetSniffer(addr, netType string) (err error) {
+	addr = strings.TrimLeft(strings.TrimLeft(addr, "https://"), "http://")
+	if len(strings.Split(addr, ":")) != 2 {
+		err = errors.New(" wrong addr!")
+		return
+	}
+	netType = strings.ToLower(netType)
+	if netType != "udp" && netType != "tcp" {
+		err = errors.New(netType + " wrong net type!")
+		return
+	}
+	conn, err := net.DialTimeout(netType, addr, DialTimeOutDuration)
+	if err != nil {
+		return
+	}
+	if conn == nil {
+		err = errors.New(addr + " conn failed!")
+		return
+	}
+	_ = conn.Close()
+	return nil
 }
