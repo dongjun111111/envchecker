@@ -85,10 +85,7 @@ func Setup(src string) error {
 	if src == "" {
 		err = gcfg.ReadFileInto(&Config, "config/config.ini")
 	} else {
-		err = gcfg.ReadStringInto(&Config, strings.ReplaceAll(src, "update-config", ""))
-		if err != nil {
-			log.Println("Failed to parse "+src+":", err)
-		}
+		err = gcfg.ReadStringInto(&Config, strings.ReplaceAll(src, "update-config", ""))		
 	}
 	if err != nil {
 		log.Println("Failed to parse config file:", err)
