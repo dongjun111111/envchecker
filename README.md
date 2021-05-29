@@ -19,4 +19,4 @@
     - Hbase
     - Tidb
 -  操作界面：
-![envchecker.png](https://i.loli.net/2021/05/26/SdXfFGArQExsiJt.png)
+![envchecker.png](https://amaimg.com/i/2021/05/29/dq6gvn.png)
