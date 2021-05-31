@@ -76,12 +76,20 @@
       updateBtn.onclick = function (e) {        
         document.getElementById("config").style.display ="table";
         this.style.display = "none";
+        document.getElementById("btn").disabled=true;
+        document.getElementById("btn").style.background = "gray"; 
+        document.getElementById("btn2").disabled=true;
+        document.getElementById("btn2").style.background = "gray"; 
         action_windows.innerText ="";
       };
 
       btn0.onclick = function (e) {
         document.getElementById("updateBtn").style.display ="inline";
         document.getElementById("config").style.display ="none";
+        document.getElementById("btn").disabled=false;
+        document.getElementById("btn").style.background = "green"; 
+        document.getElementById("btn2").disabled=false;
+        document.getElementById("btn2").style.background = "green"; 
         var content = document.getElementById("content").value;
         action_windows.innerText =""; 
         var content2 = "update-config"+content;
