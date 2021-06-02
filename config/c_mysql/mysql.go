@@ -25,7 +25,11 @@ func (s *Obj_Mysql) CheckObj(objcfg *config.ObjCfg) (res []byte) {
 		return
 	}
 	if !strings.Contains(objcfg.Link, "timeout") {
-		objcfg.Link += "&timeout=3s"
+		if strings.Contains(objcfg.Link, "?") {
+			objcfg.Link += "&timeout=3s"
+		} else {
+			objcfg.Link += "?timeout=3s"
+		}
 	}
 	_, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       objcfg.Link,
